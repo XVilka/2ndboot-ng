@@ -59,6 +59,8 @@ static void l1_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, 
 
 /* In this function we need to change all defined constants from mach/plat/mxc
  * to defines from mach/plat-omap/include/omap34xx.h
+ * See http://docs.blackfin.uclinux.org/doku.php?id=linux-kernel:drivers:example_on-chip_sram
+ * for examples
  */
 
 void build_l1_table(uint32_t *table) {
