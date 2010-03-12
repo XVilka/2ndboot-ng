@@ -27,6 +27,7 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
+#include <mach/omap34xx.h>
 #include "hboot.h"
 
 #define CTRL_DEVNAME "hbootctrl"
@@ -55,6 +56,10 @@ static void l1_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, 
 
 #define L1_NORMAL_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_WB)
 #define L1_DEVICE_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_UNCACHED)
+
+/* In this function we need to change all defined constants from mach/plat/mxc
+ * to defines from mach/plat-omap/include/omap34xx.h
+ */
 
 void build_l1_table(uint32_t *table) {
 	memset(table, 0, 4*4096);
