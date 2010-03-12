@@ -17,6 +17,8 @@
  *  hardware it's running on.  See Documentation/arm/Setup
  *  for more info.
  */
+
+
 #ifndef __ASMARM_SETUP_H
 #define __ASMARM_SETUP_H
 
