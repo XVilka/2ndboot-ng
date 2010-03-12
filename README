@@ -1,0 +1,68 @@
+1. Download your device kernel, unpack this and create configs and headers:
+
+make mapphone_defconfig
+make headers_install ARCH=arm INSTALL_HDR_PATH=~/build/kern_h/
+
+You must know, what proccessor chip you have on target device, and set optimisation options 
+from (http://gcc.gnu.org/onlinedocs/gcc-4.4.3/gcc/ARM-Options.html#ARM-Options)
+For example, if you have Motorola Milestone - so processor chip is TI OMAP3430 - ARM Cortex a8 (armv7a arch)
+(http://en.wikipedia.org/wiki/ARM_architecture)
+So you need use configs with -omap3430 suffix.
+If you have HTC Hero you need configs with -msm7200a suffix.
+Set enviroment variable for building options:
+
+export _XXCFLAGS=" -march=armv7-a -mtune=cortex-a8 -mfpu=neon" (if you have Milestone/Droid or other device on TI OMAP3430)
+export _XXCFLAGS=" -march=armv6j -mtune=arm1136jf-s" (if you have HTC Hero or other device on Quallcomm MSM 7200A)
+
+2. Download crosstool-ng (http://ymorin.is-a-geek.org/dokuwiki/projects/crosstool),
+Unpack, build (you need for: make,install,bash,cut,sed,grep,gcc,awk,bison,flex,automake,libtool,stat,
+wget,cvs,patch,tar,gzip,bzip2,lzma,readlink,ncurses, mpfr-dev, gmp-dev)
+
+.configure
+make
+make install
+
+3. Create dir toolchain-android, cd to it and copy files:
+XVilka-crosstool-<suffix>.config in .config
+XVilka-uClibc-<suffix>.config in uClibc-0.9.30.2.config
+and then run: 
+
+ct-ng menuconfig 
+
+change anything, if you need, and save to .config
+then exec:
+
+ct-ng build
+
+4. Done! We have toolchain in build/x-tools. 
+All tools have this triplet: arm-android-linux-uclibsgnueabi-*
+just add them in PATH
+
+export PATH=$HOME/build/x-tools/arm-android-linux-uclibcgnueabi/bin:$PATH
+export CROSS_COMPILE=arm-android-linux-uclibcgnueabi-
+export KERNEL_CROSS_COMPILE=arm-android-linux-uclibcgnueabi-
+export CFLAGS=" -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
+
+So we can run:
+
+arm-android-linux-uclibcgnueabi-gcc
+
+Also we have system root directory in: 
+$HOME/build/x-tools/arm-android-linux-uclibcgnueabi/arm-android-linux-uclibcgnueabi/sys-root
+For some reasons we just copy it in $HOME/build/cross/sys-root 
+chmod +w sys-root
+chmod +w sys-root/usr
+chmod +w sys-root/usr/lib
+
+6. Build kernel
+
+make mapphone_defconfig
+make -f kernel/kernel.mk
+copy files System.map and .config in directory kernel/ksplice
+ksplice-create --diffext=.patched_ext kernel
+
+7. Building modules
+
+In directory hbootmod run:
+
+make -C $HOME/build/ksplice/kernel M=`pwd` modules
