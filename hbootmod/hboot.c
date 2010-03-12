@@ -6,6 +6,7 @@
 #include "hboot.h"
 
 #define CTRL_DEVNAME "hbootctrl"
+
 struct cdev *hboot_cdev;
 dev_t hboot_dev;
 static int dev_major;

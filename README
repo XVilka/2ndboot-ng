@@ -1,3 +1,5 @@
+This is small reaceipts how you can build 2ndboot-ng
+
 1. Download your device kernel, unpack this and create configs and headers:
 
 make mapphone_defconfig
