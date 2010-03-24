@@ -6,6 +6,11 @@ It consists from:
 - small userspace program, which give for module boot image and flags
 - universal bootloader, which can uses many places for booting: boot image file from nand flash, boot image from SD card, USB booting, and network booting
 
+!!! FIRST YOU NEED THIS !!!
+
+OMAP3430 Reference Manual http://www.xvilka.org/files/SWPU117D_FinalEPDF_02_18_2010.pdf
+Linux Kernel Programming Book http://www.xvilka.org/files/ldd3_pdf.tar.bz2
+
 For creating this program we need read thease resorses:
 
 http://wiki.davincidsp.com/index.php/Secondary_Bootloaders_on_OMAP-L1x
@@ -49,16 +54,16 @@ make install
 3. Create dir toolchain-android, cd to it and copy files:
 XVilka-crosstool-<suffix>.config in .config
 XVilka-uClibc-<suffix>.config in uClibc.config
-and then run: 
+and then run:
 
-ct-ng menuconfig 
+ct-ng menuconfig
 
 change anything, if you need, and save to .config
 then exec:
 
 ct-ng build
 
-4. Done! We have toolchain in build/x-tools. 
+4. Done! We have toolchain in build/x-tools.
 All tools have this triplet: arm-android-linux-uclibsgnueabi-*
 just add them in PATH
 
@@ -71,9 +76,9 @@ So we can run:
 
 arm-android-linux-uclibcgnueabi-gcc
 
-Also we have system root directory in: 
+Also we have system root directory in:
 $HOME/build/x-tools/arm-android-linux-uclibcgnueabi/arm-android-linux-uclibcgnueabi/sys-root
-For some reasons we just copy it in $HOME/build/cross/sys-root 
+For some reasons we just copy it in $HOME/build/cross/sys-root
 chmod +w sys-root
 chmod +w sys-root/usr
 chmod +w sys-root/usr/lib
