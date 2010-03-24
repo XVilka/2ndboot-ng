@@ -1,0 +1,11 @@
+1. Compile and test kernel module hbootmod
+ (we need to change memory remapping functions for OMAP3430 platform, see build_l1_table() function in hboot.c
+
+2. Rewrite userspace tool and test it on stock boot.img
+
+3. Rewrite bootloader (or port u-boot) to create custom booting service:
+ boot kernel image from file;
+ boot kernel image from USB (fastboot);
+ boot kernel image from network (network boot).
+
+4. Add any of needed features to bootloader/bootmod/userspace utility
