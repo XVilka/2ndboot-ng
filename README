@@ -1,3 +1,30 @@
+2ndboot-ng – this is a bootloader, which can boot custom boot image (including custom kernel + initrd) from any place/file.
+
+It consists from:
+
+- small kernel module, for creating device for booting/controlling boot
+- small userspace program, which give for module boot image and flags
+- universal bootloader, which can uses many places for booting: boot image file from nand flash, boot image from SD card, USB booting, and network booting
+
+For creating this program we need read thease resorses:
+
+http://wiki.davincidsp.com/index.php/Secondary_Bootloaders_on_OMAP-L1x
+http://wiki.omap.com/index.php/Main_Page
+https://gforge.ti.com/gf/project/omapzoom/wiki/?pagename=FAQ-7%3A+Zoom-II+Android+NAND+booting
+http://elinux.org/Kernel_XIP_Instructions_For_OMAP
+http://lists.infradead.org/pipermail/barebox/2009-December/000162.html
+http://209.85.135.132/search?q=cache:etUMZlUjOZkJ:not.freedsoftware.org/lemote-misc/git-mirror/linux_loongson.git/arch/arm/plat-mxc/include/mach/mx31.h+L2CC_BASE_ADDR&cd=5&hl=ru&ct=clnk&gl=ru
+http://omappedia.org/wiki/Main_Page
+http://omappedia.org/wiki/Bootloader_Project
+http://elinux.org/OMAP_Power_Management
+http://docs.blackfin.uclinux.org/doku.php?id=linux-kernel:drivers:example_on-chip_sram
+http://docs.blackfin.uclinux.org/doku.php?id=bootloaders:u-boot:porting
+http://omappedia.org/wiki/Linux_OMAP_Kernel_Project
+http://omappedia.org/wiki/Linux_Getting_Started
+http://git.openinkpot.org/contrib/reloaded-2.6.git/tree/
+
+-----------------------------------BUILDING 2NDBOOT-NG------------------------
+
 This is small reaceipts how you can build 2ndboot-ng
 
 1. Download your device kernel, unpack this and create configs and headers:
@@ -5,16 +32,11 @@ This is small reaceipts how you can build 2ndboot-ng
 make mapphone_defconfig
 make headers_install ARCH=arm INSTALL_HDR_PATH=~/build/kern_h/
 
-You must know, what proccessor chip you have on target device, and set optimisation options 
-from (http://gcc.gnu.org/onlinedocs/gcc-4.4.3/gcc/ARM-Options.html#ARM-Options)
-For example, if you have Motorola Milestone - so processor chip is TI OMAP3430 - ARM Cortex a8 (armv7a arch)
-(http://en.wikipedia.org/wiki/ARM_architecture)
-So you need use configs with -omap3430 suffix.
-If you have HTC Hero you need configs with -msm7200a suffix.
+We have Motorola Milestone - so processor chip is TI OMAP3430 - ARM Cortex a8 (armv7-a arch)
+(http://en.wikipedia.org/wiki/ARM_architecture). So you need use configs with -omap3430 suffix.
 Set enviroment variable for building options:
 
-export _XXCFLAGS=" -march=armv7-a -mtune=cortex-a8 -mfpu=neon" (if you have Milestone/Droid or other device on TI OMAP3430)
-export _XXCFLAGS=" -march=armv6j -mtune=arm1136jf-s" (if you have HTC Hero or other device on Quallcomm MSM 7200A)
+export _XXCFLAGS=" -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
 
 2. Download crosstool-ng (http://ymorin.is-a-geek.org/dokuwiki/projects/crosstool),
 Unpack, build (you need for: make,install,bash,cut,sed,grep,gcc,awk,bison,flex,automake,libtool,stat,
@@ -26,7 +48,7 @@ make install
 
 3. Create dir toolchain-android, cd to it and copy files:
 XVilka-crosstool-<suffix>.config in .config
-XVilka-uClibc-<suffix>.config in uClibc-0.9.30.2.config
+XVilka-uClibc-<suffix>.config in uClibc.config
 and then run: 
 
 ct-ng menuconfig 
@@ -60,11 +82,9 @@ chmod +w sys-root/usr/lib
 
 make mapphone_defconfig
 make -f kernel/kernel.mk
-copy files System.map and .config in directory kernel/ksplice
-ksplice-create --diffext=.patched_ext kernel
 
-7. Building modules
+7. Building module
 
 In directory hbootmod run:
 
-make -C $HOME/build/ksplice/kernel M=`pwd` modules
+make -C $HOME/build/kernel M=`pwd` modules
