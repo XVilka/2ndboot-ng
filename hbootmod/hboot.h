@@ -56,12 +56,21 @@ struct hboot_buffer_req {
 	uint32_t rest;
 };
 
-#define MAX_BUFFERS_COUNT 8
+#define MAX_BUFFERS_COUNT 			8
 
 #define INVALID_BUFFER_HANDLE ((int)-1)
 #define HBOOT_ALLOCATE_BUFFER		0
-#define HBOOT_FREE_BUFFER		1
-#define HBOOT_SELECT_BUFFER		2
-#define HBOOT_BOOT			3
+#define HBOOT_FREE_BUFFER			1
+#define HBOOT_SELECT_BUFFER			2
+#define HBOOT_BOOT					3
+
+#define L2CC_BASE_ADDR
+#define AIPS1_BASE_ADDR
+#define AIPS2_BASE_ADDR
+#define SPBA0_BASE_ADDR
+#define SPBA1_BASE_ADDR
+#define X_MEMC_BASE_ADDR
+#define FB_RAM_BASE_ADDR
+
 #endif
 	
