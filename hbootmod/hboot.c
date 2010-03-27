@@ -34,7 +34,6 @@
 
 struct cdev *hboot_cdev;
 dev_t hboot_dev;
-static int dev_major;
 
 // will _never_ return
 int __attribute__((__naked__)) do_branch(void *bootlist, uint32_t bootsize, uint32_t new_ttbl, void *func) {
