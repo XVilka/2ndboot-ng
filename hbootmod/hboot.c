@@ -30,12 +30,19 @@
 #include <mach/omap34xx.h>
 #include "hboot.h"
 
+MODULE_DESCRIPTION("2ndboot-ng kernel module");
+
 #define CTRL_DEVNAME "hbootctrl"
+
+#define L1_NORMAL_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_WB)
+#define L1_DEVICE_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_UNCACHED)
 
 struct cdev *hboot_cdev;
 dev_t hboot_dev;
 
-// will _never_ return
+/* This function do jump and execute code of *function
+ * For this function we need use init function in bootloader
+ */ 
 int __attribute__((__naked__)) do_branch(void *bootlist, uint32_t bootsize, uint32_t new_ttbl, void *func) {
 	__asm__ volatile (
 		"bx r3\n"
@@ -43,6 +50,8 @@ int __attribute__((__naked__)) do_branch(void *bootlist, uint32_t bootsize, uint
 	return 0;
 }
 
+/* This function do remapping from virtual memory address to physical
+ */
 static void l1_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, uint32_t flags) {
 	uint32_t physbase, virtbase;
 
@@ -53,15 +62,12 @@ static void l1_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, 
 	}
 }
 
-#define L1_NORMAL_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_WB)
-#define L1_DEVICE_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_UNCACHED)
-
 /* In this function we need to change all defined constants from mach/plat/mxc
  * to defines from mach/plat-omap/include/omap34xx.h
  * See http://docs.blackfin.uclinux.org/doku.php?id=linux-kernel:drivers:example_on-chip_sram
  * for examples
+ * Of course we can use only L2 cache mapping, but it can give unpredictable results!
  */
-
 void build_l1_table(uint32_t *table) {
 	memset(table, 0, 4*4096);
 	l1_map(table, PHYS_OFFSET, PHYS_OFFSET, 64, L1_NORMAL_MAPPING);
@@ -75,6 +81,9 @@ void build_l1_table(uint32_t *table) {
 //	l1_map(table, FB_RAM_BASE_ADDR, FB_RAM_BASE_ADDR, 4, L1_DEVICE_MAPPING);
 }
 
+/* This function point exec stack on entry point of bootloader image in memory
+ * and branch to this point 
+ */
 int hboot_boot(int handle) {
 	bootfunc_t boot_entry;
 	uint32_t bootsize, listsize;
@@ -87,13 +96,14 @@ int hboot_boot(int handle) {
 		return -ENOMEM;
 	}
 	if (l1_mem & 0x3fff) {
-//		l1_table = (uint32_t*)(((l1_mem >> 14) + 1) << 14);
+//		l1_table = (uint32_t*)(((l1_mem >> 14) + 1) << 14); /* Unknown code - may be we can delete it? */
 		printk("unaligned l1 table\n");
 		free_high_pages((void*)l1_mem, 2);
 		return -EINVAL;
 	} else {
 		l1_table = (uint32_t*)l1_mem;
 	}
+	
 	build_l1_table(l1_table);
 
 	boot_entry = get_bootentry(&bootsize, handle);
@@ -109,7 +119,7 @@ int hboot_boot(int handle) {
 	local_fiq_disable();
 	do_branch(bootlist, listsize, virt_to_phys(l1_table), boot_entry);
 
-/*	not a chance	*/
+/*	This code will never run  */
 #if 0
 	set_ttbl_base(l1_old);
 	local_fiq_enable();
@@ -121,6 +131,9 @@ int hboot_boot(int handle) {
 	return -EBUSY;
 }
 
+/* Some ioctrl functions for user-kernel communicating by char device
+ * Can be replaced by other mechanisms
+ */
 static int hbootctrl_open(struct inode *inode, struct file *file);
 static int hbootctrl_release(struct inode *inode, struct file *file);
 static int hbootctrl_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg);
@@ -186,6 +199,8 @@ static int hbootctrl_write(struct file *file, const char __user *buf, size_t cou
 	return buffer_append_userdata(buf, count, ppos);
 }
 
+/* Main module init function
+ */
 int __init hboot_init(void) {
 	int ret;
 
@@ -213,3 +228,5 @@ void __exit hboot_exit(void) {
 
 module_init(hboot_init);
 module_exit(hboot_exit);
+
+MODULE_LICENSE("GPL");

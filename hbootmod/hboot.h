@@ -65,7 +65,7 @@ struct hboot_buffer_req {
 #define HBOOT_SELECT_BUFFER			2
 #define HBOOT_BOOT					3
 
-#define L2CC_BASE_ADDR              0x0000
+#define L2CC_BASE_ADDR              0x80000000
 #define AIPS1_BASE_ADDR				0x0000
 #define AIPS2_BASE_ADDR				0x0000
 #define SPBA0_BASE_ADDR				0x0000

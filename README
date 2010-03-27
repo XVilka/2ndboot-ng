@@ -93,3 +93,7 @@ make
 In directory hbootmod run:
 
 make -C $HOME/build/kernel M=`pwd` modules
+
+You can clean directory by command:
+
+make -C $HOME/build/kernel M=`pwd` clean

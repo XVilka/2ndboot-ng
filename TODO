@@ -1,6 +1,8 @@
 1. Compile and test kernel module hbootmod
  (we need to change memory remapping functions for OMAP3430 platform, see build_l1_table() function in hboot.c
  for use processor specific features we can see cpu_v7_ functions from proc_v7.S from linux kernel)
+ Also we need to rewrite buffer memory allocating functions to be more portable and tiny (make building modules
+ symply by command "make")
 
 2. Rewrite userspace tool and test it on stock boot.img
 
@@ -10,3 +12,5 @@
  boot kernel image from network (network boot).
 
 4. Add any of needed features to bootloader/bootmod/userspace utility
+
+5. Add more portability and support of other platforms and kernels, use more assembler
