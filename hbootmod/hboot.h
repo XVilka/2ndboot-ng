@@ -30,6 +30,8 @@
 #ifdef __KERNEL__
 #include <linux/types.h>
 
+#define __PLAT_TI_OMAP3430__
+
 uint32_t get_high_mem(size_t size);
 void free_high_mem(void *p);
 uint32_t get_high_pages(unsigned int order);
@@ -65,13 +67,11 @@ struct hboot_buffer_req {
 #define HBOOT_SELECT_BUFFER			2
 #define HBOOT_BOOT					3
 
+#ifdef __PLAT_TI_OMAP3430__
 #define L2CC_BASE_ADDR              0x80000000
-#define AIPS1_BASE_ADDR				0x0000
-#define AIPS2_BASE_ADDR				0x0000
-#define SPBA0_BASE_ADDR				0x0000
-#define SPBA1_BASE_ADDR				0x0000
-#define X_MEMC_BASE_ADDR			0x0000
-#define FB_RAM_BASE_ADDR			0x0000
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#endif
 
 #endif
-	

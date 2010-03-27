@@ -27,8 +27,16 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
-#include <mach/omap34xx.h>
+
 #include "hboot.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include <mach/omap34xx.h>
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include <mach/mx31.h>
+#endif
 
 MODULE_DESCRIPTION("2ndboot-ng kernel module");
 
@@ -72,13 +80,21 @@ void build_l1_table(uint32_t *table) {
 	memset(table, 0, 4*4096);
 	l1_map(table, PHYS_OFFSET, PHYS_OFFSET, 64, L1_NORMAL_MAPPING);
 	l1_map(table, PHYS_OFFSET, PAGE_OFFSET, 64, L1_NORMAL_MAPPING);
+
+#ifdef __PLAT_TI_OMAP3430__
 	l1_map(table, L2CC_BASE_ADDR, L2CC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
-//	l1_map(table, AIPS1_BASE_ADDR, AIPS1_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-//	l1_map(table, AIPS2_BASE_ADDR, AIPS2_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-//	l1_map(table, SPBA0_BASE_ADDR, SPBA0_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-//	l1_map(table, SPBA1_BASE_ADDR, SPBA1_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-//	l1_map(table, X_MEMC_BASE_ADDR, X_MEMC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
-//	l1_map(table, FB_RAM_BASE_ADDR, FB_RAM_BASE_ADDR, 4, L1_DEVICE_MAPPING);
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+	l1_map(table, L2CC_BASE_ADDR, L2CC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
+	l1_map(table, AIPS1_BASE_ADDR, AIPS1_BASE_ADDR, 16, L1_DEVICE_MAPPING);
+	l1_map(table, AIPS2_BASE_ADDR, AIPS2_BASE_ADDR, 16, L1_DEVICE_MAPPING);
+	l1_map(table, SPBA0_BASE_ADDR, SPBA0_BASE_ADDR, 16, L1_DEVICE_MAPPING);
+	l1_map(table, SPBA1_BASE_ADDR, SPBA1_BASE_ADDR, 16, L1_DEVICE_MAPPING);
+	l1_map(table, X_MEMC_BASE_ADDR, X_MEMC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
+	l1_map(table, FB_RAM_BASE_ADDR, FB_RAM_BASE_ADDR, 4, L1_DEVICE_MAPPING);
+#endif
+
 }
 
 /* This function point exec stack on entry point of bootloader image in memory
