@@ -1,11 +1,11 @@
-DESTDIR		 = /mmc/mmca1/ldr
-DESTHOST	 = 192.168.16.2
+DESTDIR		 = /home/xvilka/build/hboot
+DESTHOST	 = 192.168.1.1
 
-PREFIX		 = /mnt/hd/e8-gcc/bin/arm-linux-gnueabi
+PREFIX		 = arm-android-linux-uclibcgnueabi
 CFLAGS		:= -fno-stack-protector -fno-builtin -nostdinc -fPIC -D__LOADER__ -Os
 LDFLAGS		:= -static -nostdlib -fPIC
 ASFLAGS		:= -c -x assembler-with-cpp -D__LOADER__
-LIBS		:= -lgcc
+LIBS		:= -lgcc -lgcc_eh
 
 ELF_TARGET	 = boot.elf
 RAW_TARGET	 = boot

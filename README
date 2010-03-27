@@ -86,7 +86,7 @@ chmod +w sys-root/usr/lib
 6. Build kernel
 
 make mapphone_defconfig
-make -f kernel/kernel.mk
+make
 
 7. Building module
 
