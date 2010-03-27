@@ -1,0 +1,1 @@
+cmd_/home/xvilka/Documents/android/hack/2ndboot-ng/hbootmod/hboot.ko := arm-android-linux-uclibcgnueabi-ld -EL -r   --build-id -o /home/xvilka/Documents/android/hack/2ndboot-ng/hbootmod/hboot.ko /home/xvilka/Documents/android/hack/2ndboot-ng/hbootmod/hboot.o /home/xvilka/Documents/android/hack/2ndboot-ng/hbootmod/hboot.mod.o
