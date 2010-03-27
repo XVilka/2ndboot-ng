@@ -45,7 +45,7 @@ int main() {
   
   image_complete();
 
-  printf("e8 loader rev %s.\n", LDR_VERSION);
+  printf("Multiloader rev %s.\n", LDR_VERSION);
   image_dump_stats();
 
   atlas_init();

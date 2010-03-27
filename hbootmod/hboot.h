@@ -46,6 +46,7 @@ void buffers_destroy(void);
 typedef void (*bootfunc_t)(void *, uint32_t);
 bootfunc_t get_bootentry(uint32_t *bootsize, int handle);
 void *get_bootlist(uint32_t *listsize, int handle);
+
 #endif
 
 struct hboot_buffer_req {
@@ -64,13 +65,13 @@ struct hboot_buffer_req {
 #define HBOOT_SELECT_BUFFER			2
 #define HBOOT_BOOT					3
 
-#define L2CC_BASE_ADDR
-#define AIPS1_BASE_ADDR
-#define AIPS2_BASE_ADDR
-#define SPBA0_BASE_ADDR
-#define SPBA1_BASE_ADDR
-#define X_MEMC_BASE_ADDR
-#define FB_RAM_BASE_ADDR
+#define L2CC_BASE_ADDR              0x0000
+#define AIPS1_BASE_ADDR				0x0000
+#define AIPS2_BASE_ADDR				0x0000
+#define SPBA0_BASE_ADDR				0x0000
+#define SPBA1_BASE_ADDR				0x0000
+#define X_MEMC_BASE_ADDR			0x0000
+#define FB_RAM_BASE_ADDR			0x0000
 
 #endif
 	
