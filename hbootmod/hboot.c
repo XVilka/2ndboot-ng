@@ -107,12 +107,13 @@ int hboot_boot(int handle) {
 	uint32_t l1_mem, *l1_table;
 
 	l1_mem = get_high_pages(2);
+	
 	if (l1_mem == 0) {
 		printk("Failed to allocate new l1 table\n");
 		return -ENOMEM;
 	}
-	if (l1_mem & 0x3fff) {
-//		l1_table = (uint32_t*)(((l1_mem >> 14) + 1) << 14); /* Unknown code - may be we can delete it? */
+	if (l1_mem & 0x3fff) { 										/* Architecture specific code! Must be more portability. */
+//		l1_table = (uint32_t*)(((l1_mem >> 14) + 1) << 14); 	/* Unknown code - may be we can delete it? */
 		printk("unaligned l1 table\n");
 		free_high_pages((void*)l1_mem, 2);
 		return -EINVAL;
