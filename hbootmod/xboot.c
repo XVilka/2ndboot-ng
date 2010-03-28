@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *   along with 2ndboot-ng.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with 2ndboot-ng.  If not, see <http://www.gnu.org/licenses/>.
  *
 */
 
@@ -29,7 +29,7 @@
 #include <linux/cdev.h>
 #include <mach/omap34xx.h>
 
-#define CODE 0
+#define CODE 0x80000000
 
 static int xprint(void) {
 	printk("Jumped to code\n");

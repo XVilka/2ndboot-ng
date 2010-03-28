@@ -8,4 +8,4 @@
 EXTRA_CFLAGS += -D__PLAT_TI_OMAP3430__ -Wall -march=armv7-a -mtune=cortex-a8 -mfpu=neon
 
 obj-m:= hboot.o xboot.o
-hboot-objs: hboot.o buffers.o crc32.o xboot.o
+hboot-objs:= hboot.o buffers.o crc32.o

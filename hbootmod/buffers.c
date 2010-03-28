@@ -18,7 +18,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *   along with 2ndboot-ng.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with 2ndboot-ng.  If not, see <http://www.gnu.org/licenses/>.
  * 
 */
 
@@ -37,6 +37,7 @@
 #define CHUNK_SIZE		    (PAGE_SIZE*PAGES_PER_CHUNK)
 
 #pragma pack(push, 1)
+
 struct plain_buffer {
 	struct abstract_buffer a;
 	void *data;
