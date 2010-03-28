@@ -15,3 +15,4 @@ all:
 
 clean:
 	make -C $(HOME)/Documents/android/hack/kernel-mi M=$(PWD) clean
+	rm -f *.order

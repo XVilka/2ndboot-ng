@@ -51,6 +51,7 @@ struct source_type {
 	const char *name;
 	int (*handle)(FILE *fp, int tag, int *buf);
 };
+
 struct source_type g_sources[] = {
 	{"file", handle_file},
 	{"nand", handle_nand},
