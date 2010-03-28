@@ -25,6 +25,8 @@
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
 #include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
 
@@ -37,8 +39,6 @@
 #ifdef __PLAT_FREESCALE_IMX31__
 #include <mach/mx31.h>
 #endif
-
-MODULE_DESCRIPTION("2ndboot-ng kernel module");
 
 #define CTRL_DEVNAME "hbootctrl"
 
@@ -218,11 +218,10 @@ static int hbootctrl_write(struct file *file, const char __user *buf, size_t cou
 
 /* Main module init function
  */
-int __init hboot_init(void) {
+static int __init hboot_init(void) {
 	int ret;
-
-	ret = buffers_init();
-
+    printk(KERN_INFO CTRL_DEVNAME ": Initializing 2ndboot-ng module...\n");
+    ret = buffers_init();
 	if (ret < 0) {
 		printk(KERN_WARNING CTRL_DEVNAME ": Failed to initialize buffers table\n");
 		return ret;
@@ -231,15 +230,14 @@ int __init hboot_init(void) {
     hboot_cdev = cdev_alloc( );
     cdev_init(hboot_cdev, &hbootctrl_ops);
 	ret = cdev_add(hboot_cdev, hboot_dev, 1);
-
 	printk(KERN_INFO CTRL_DEVNAME ":  Successfully registered dev\n");
 	return 0;
 }
 
-void __exit hboot_exit(void) {
-		buffers_destroy();
-		cdev_del(hboot_cdev);
-		unregister_chrdev_region(hboot_dev, 1);
+static void __exit hboot_exit(void) {
+	buffers_destroy();
+	cdev_del(hboot_cdev);
+	unregister_chrdev_region(hboot_dev, 1);
 	return;
 }
 
@@ -247,3 +245,5 @@ module_init(hboot_init);
 module_exit(hboot_exit);
 
 MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("2ndboot-ng kernel module");
+MODULE_AUTHOR("XVilka");
