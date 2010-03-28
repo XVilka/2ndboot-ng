@@ -1,0 +1,6 @@
+2ndboot-ng can be used in this platfroms:
+
+Freescale i.MX31                                             |  #define __PLAT_FREESCALE_IMX31__
+Texas Instruments OMAP3430                                   |  #define __PLAT_TI_OMAP3430__
+
+Please use own toolchains for any platforms.

@@ -30,8 +30,6 @@
 #ifdef __KERNEL__
 #include <linux/types.h>
 
-#define __PLAT_TI_OMAP3430__
-
 uint32_t get_high_mem(size_t size);
 void free_high_mem(void *p);
 uint32_t get_high_pages(unsigned int order);
