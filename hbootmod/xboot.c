@@ -29,6 +29,8 @@
 #include <linux/cdev.h>
 #include <mach/omap34xx.h>
 
+#define CODE 0
+
 static int xprint(void) {
 	printk("Jumped to code\n");
 	return 0;
@@ -52,7 +54,7 @@ static int xboot(void) {
 	preempt_disable();
 	local_irq_disable();
 	local_fiq_disable();
-	do_branch(NULL, 1, 0x00014000, &xprint);
+	do_branch(NULL, 1, CODE, &xprint);
 	while (1);
 	return -EBUSY;
 }
