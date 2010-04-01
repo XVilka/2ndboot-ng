@@ -23,10 +23,17 @@
 */
 
 #include "types.h"
-#include "mxc91231.h"
 #include "common.h"
 #include "cspi.h"
 #include "gpt.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 #define CSPI_RXDATA(base)    ((base) + 0x00)
 #define CSPI_TXDATA(base)    ((base) + 0x04)

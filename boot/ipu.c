@@ -23,10 +23,18 @@
 */
 
 #include "types.h"
-#include "mxc91231.h"
 #include "ipu_priv.h"
 #include "ipu_regs.h"
 #include "common.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
+
 static inline uint32_t ipu_channel_2_dma(ipu_channel_t ch, ipu_buffer_t type) {
   return ((type == IPU_INPUT_BUFFER) ? ((uint32_t)ch & 0xff) :
 	  ((type == IPU_OUTPUT_BUFFER) ? (((uint32_t)ch >> 8) & 0xff) :

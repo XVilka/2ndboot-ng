@@ -23,8 +23,15 @@
 */
 
 #include "common.h"
-#include "mxc91231.h"
 #include "spba.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 int spba_change_rights(unsigned int module, unsigned int rights) {
   uint32_t v;

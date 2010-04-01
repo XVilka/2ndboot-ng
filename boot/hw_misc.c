@@ -23,8 +23,15 @@
 */
 
 #include "hw_misc.h"
-#include "mxc91231.h"
 #include "common.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 int hw_preboot() {
 /* Enable USBOTG clocks */

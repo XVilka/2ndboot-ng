@@ -24,11 +24,19 @@
  * 
 */
 
-#include "mxc91231.h"
 #include "types.h"
 #include "common.h"
 #include "string.h"
+#include "division.h"
 #include "clock_priv.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 #define SEXT(nbits,val)         ((((int)(val)) << (32-(nbits))) >> (32-(nbits)))
 
@@ -108,8 +116,10 @@ static unsigned long clock_get_pll(int pll_num) {
 
   val1 = 2 * ref_clk * mfi;
   val2 = 2 * ref_clk * (signed long long)mfn;
-  val2 = val2 / mfd;
-  pll_out = (val1 + (signed long)val2) / (pdf + 1);
+  val2 = do_div(val2, mfd);
+  pll_out = val1 + (signed long)val2;
+  pll_out = do_div(pll_out, (pdf + 1));
+  
   return pll_out;
 }
                                                                                                
@@ -133,6 +143,7 @@ static unsigned long clock_get_main_divider(const char *str) {
 unsigned long clock_get(const char *str) {
   unsigned long ap_unc_pat_ref, ap_ref_x2, ap_ref_clk;
   unsigned long ap_clk_pre_dfs;
+  unsigned long clock_pll, clock_main_divider;
   uint32_t acsr;
 
   clock_refs(&ap_unc_pat_ref, &ap_ref_x2, &ap_ref_clk);
@@ -144,11 +155,14 @@ unsigned long clock_get(const char *str) {
     uint32_t apsel;
 
     apsel = (acsr & MXC_CRMAP_ASCSR_APSEL_MASK) >> MXC_CRMAP_ASCSR_APSEL_OFFSET;
-    ap_clk_pre_dfs = clock_get_pll(apsel) / clock_get_main_divider("cpu");
+    clock_pll = clock_get_pll(apsel);
+    clock_main_divider = clock_get_main_divider("cpu");
+    ap_clk_pre_dfs = do_div(clock_pll, clock_main_divider);
   }
 
   if (strcmp(str, "ipg") == 0) {
-    return ap_clk_pre_dfs / clock_get_main_divider("ipg");
+	clock_main_divider = clock_get_main_divider("ipg");
+    return do_div(ap_clk_pre_dfs, clock_main_divider);
   }
   return 0;
 }

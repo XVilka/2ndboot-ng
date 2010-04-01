@@ -25,7 +25,15 @@
 #include "memory.h"
 #include "nfc.h"
 #include "common.h"
-#include "mxc91231.h"
+#include "division.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 #define NFC_BUF_REG_ADDR (NFC_BASE_ADDR + 0xe04)
 #define NFC_ADDR_REG_ADDR (NFC_BASE_ADDR + 0xe06)
@@ -257,7 +265,7 @@ size_t nfc_read_data(uint8_t *dest, uint32_t offset, size_t size) {
     return 0;
   }
   pagesize = device.id->page_size;
-  page = offset / pagesize;
+  page = do_div(offset, pagesize);
   fpart = offset & (pagesize - 1);
   offset = 0;
   if (fpart) {

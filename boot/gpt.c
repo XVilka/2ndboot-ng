@@ -23,9 +23,16 @@
 */
 
 #include "gpt.h"
-#include "mxc91231.h"
 #include "common.h"
 #include "time_priv.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 #define GPT1_GPTCR (GPT1_BASE_ADDR + 0x00)
 #define GPT1_GPTPR (GPT1_BASE_ADDR + 0x04)

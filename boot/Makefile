@@ -2,10 +2,10 @@ DESTDIR		 = /home/xvilka/build/hboot
 DESTHOST	 = 127.0.0.1
 
 PREFIX		 = arm-android-linux-uclibcgnueabi
-CFLAGS		:= -fno-stack-protector -fno-builtin -nostdinc -fPIC -D__LOADER__ -Os
+CFLAGS		:= -fno-stack-protector -fno-builtin -nostdinc -fPIC -D__LOADER__ -D__PLAT_TI_OMAP3430__ -Os
 LDFLAGS		:= -static -nostdlib -fPIC
-ASFLAGS		:= -c -x assembler-with-cpp -D__LOADER__
-LIBS		:= -lgcc -lgcc_eh
+ASFLAGS		:= -c -x assembler-with-cpp -D__LOADER__ -D__PLAT_TI_OMAP3430__
+LIBS		:=
 
 ELF_TARGET	 = boot.elf
 RAW_TARGET	 = boot
@@ -16,7 +16,7 @@ LD 		 = $(PREFIX)-gcc
 OBJCOPY		 = $(PREFIX)-objcopy
 
 LD_SCRIPT	:= ld-script
-ASM_OBJS	:= init.o
+ASM_OBJS	:= init.o div.o
 C_OBJS		:= main.o images.o console.o vsprintf.o printf.o font_8x8.o memstr.o font.o gpt.o ipu.o atag.o crc32.o hw_misc.o mu.o dsp.o nfc.o iomux.o spba.o clock.o cspi.o atlas.o
 OBJS		:= $(ASM_OBJS) $(C_OBJS)
 

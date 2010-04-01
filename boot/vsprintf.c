@@ -21,6 +21,7 @@
  */
 #include "types.h"
 #include "stdarg.h"
+#include "division.h"
 
 static inline int strnlen(const char*s , size_t maxlen)
 {
@@ -90,13 +91,6 @@ static int skip_atoi(const char **s)
 #define LEFT	16		/* left justified */
 #define SPECIAL	32		/* 0x */
 #define LARGE	64		/* use 'ABCDEF' instead of 'abcdef' */
-
-#define do_div(n,base) ({ \
-int __res; \
-__res = ((unsigned long) n) % (unsigned) base; \
-n = ((unsigned long) n) / (unsigned) base; \
-__res; })
-
 
 static char * number(char * str, long num, int base, int size, int precision
 	,int type)

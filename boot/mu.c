@@ -22,10 +22,17 @@
  * 
 */
 
-#include "mxc91231.h"
 #include "error.h"
 #include "common.h"
 #include "gpt.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
 
 #define MU_MTR_BASE_ADDR (MU_BASE_ADDR+0x00)
 #define MU_MRR_BASE_ADDR (MU_BASE_ADDR+0x10)

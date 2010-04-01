@@ -23,7 +23,15 @@
 */
 
 #include "buffers.h"
-#include "mxc91231.h"
+
+#ifdef __PLAT_TI_OMAP3430__
+#include "plat/omap3430.h"
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+#endif
+
 .extern buffers_list
 .extern font_8x8
 .align 4
