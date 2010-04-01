@@ -27,8 +27,19 @@
 
 #include "types.h"
 
+#ifdef __PLAT_TI_OMAP3430__
+
 #define DSP_BPLOADER_ADDR (0x93ffc000)
 #define DSP_BPFW_ADDR (0x93c00000)
+
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+
+#define DSP_BPLOADER_ADDR (0x93ffc000)
+#define DSP_BPFW_ADDR (0x93c00000)
+
+#endif
 
 int dsp_mem_read_word(addr_t src, uint32_t *dest);
 int dsp_mem_write_word(addr_t dest, uint32_t *word);

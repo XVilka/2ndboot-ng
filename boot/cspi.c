@@ -29,11 +29,6 @@
 
 #ifdef __PLAT_TI_OMAP3430__
 #include "plat/omap3430.h"
-#endif
-
-#ifdef __PLAT_FREESCALE_IMX31__
-#include "plat/mxc91231.h"
-#endif
 
 #define CSPI_RXDATA(base)    ((base) + 0x00)
 #define CSPI_TXDATA(base)    ((base) + 0x04)
@@ -43,6 +38,22 @@
 #define CSPI_STATREG(base)   ((base) + 0x14)
 #define CSPI_PERIODREG(base) ((base) + 0x18)
 #define CSPI_TESTREG(base)   ((base) + 0x1c)
+
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+
+#define CSPI_RXDATA(base)    ((base) + 0x00)
+#define CSPI_TXDATA(base)    ((base) + 0x04)
+#define CSPI_CONREG(base)    ((base) + 0x08)
+#define CSPI_INTREG(base)    ((base) + 0x0c)
+#define CSPI_DMAREG(base)    ((base) + 0x10)
+#define CSPI_STATREG(base)   ((base) + 0x14)
+#define CSPI_PERIODREG(base) ((base) + 0x18)
+#define CSPI_TESTREG(base)   ((base) + 0x1c)
+
+#endif
 
 static addr_t cspi_modules[] = {
   CSPI1_BASE_ADDR,

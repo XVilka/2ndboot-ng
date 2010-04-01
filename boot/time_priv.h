@@ -8,21 +8,17 @@
  *      2 of the License, or (at your option) any later version.
  */
 
-#ifndef __HW_TIME_PRIV_H__
-#define __HW_TIME_PRIV_H__
-/*!
- * @file time_priv.h
- * @brief This file contains OS tick and wdog timer register definitions.
- *
- * This file contains OS tick and wdog timer register definitions.
- *
- * @ingroup Timers
+/* NEED FOR REWRITING !!!!!!!!!
+ * 
  * Revision History:
  *
  * Date         Author    Comment
  * ----------   --------  --------------------
  * 01/12/2007   Motorola  Added watchdog debug support
  */
+
+#ifndef __HW_TIME_PRIV_H__
+#define __HW_TIME_PRIV_H__
 
 /*
  * EPIT Control register bit definitions

@@ -1,24 +1,27 @@
 /*
- *  linux/lib/vsprintf.c
+ *  A module for creating rebootless custom image boot support.
  *
- *  Copyright (C) 1991, 1992  Linus Torvalds
+ *  Copyright (C) 2010 XVilka <xvilka at gmail.com>
  *
- *  Copyright 2006 Motorola, Inc.
+ *  Inspired by 2ndboot by dimich: http://hg.ezxdev.org/2ndboot/
+ * 
+ *  This file is part of 2ndboot-ng.
  *
- *  NOTE: This file was adapted from the lib/vsprintf.c file in the Linux
- *  kernel source tree.
- */
+ *  2ndboot-ng is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Foobar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *   along with 2ndboot-ng.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+*/
 
-/* vsprintf.c -- Lars Wirzenius & Linus Torvalds. */
-/*
- * Wirzenius wrote this portably, Torvalds fucked it up :-)
- */
-
-/* Date         Author          Comment
- * ===========  ==============  ==============================================
- * 20-Jun-2005  Motorola        Adapted from kernel source file: lib/vsprintf.c
- * 04-Oct-2006  Motorola        Removed printf function.
- */
 #include "types.h"
 #include "stdarg.h"
 #include "division.h"
@@ -26,61 +29,26 @@
 static inline int strnlen(const char*s , size_t maxlen)
 {
 
-	int len;
+	unsigned int len;
 	
 	len = strlen(s);
-
-	if(len > maxlen)
+	if (len > maxlen) {
 		return maxlen;
-	else
+	}
+	else {
 		return len;
+	}
 }
 
-/*
-unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base)
-{
-	unsigned long result = 0,value;
-
-	if (*cp == '0') {
-		cp++;
-		if ((*cp == 'x') && isxdigit(cp[1])) {
-			base = 16;
-			cp++;
-		}
-		if (!base) {
-			base = 8;
-		}
-	}
-	if (!base) {
-		base = 10;
-	}
-	while (isxdigit(*cp) && (value = isdigit(*cp) ? *cp-'0' : (islower(*cp)
-	    ? toupper(*cp) : *cp)-'A'+10) < base) {
-		result = result*base + value;
-		cp++;
-	}
-	if (endp)
-		*endp = (char *)cp;
-	return result;
-}
-
-long simple_strtol(const char *cp,char **endp,unsigned int base)
-{
-	if(*cp=='-')
-		return -simple_strtoul(cp+1,endp,base);
-	return simple_strtoul(cp,endp,base);
-}
-*/
-
-/* we use this so that we can do without the ctype library */
 #define is_digit(c)	((c) >= '0' && (c) <= '9')
 
 static int skip_atoi(const char **s)
 {
-	int i=0;
+	unsigned int i = 0;
 
-	while (is_digit(**s))
-		i = i*10 + *((*s)++) - '0';
+	while (is_digit(**s)) {
+		i = i * 10 + *((*s)++) - '0';
+	}
 	return i;
 }
 
@@ -96,7 +64,7 @@ static char * number(char * str, long num, int base, int size, int precision
 	,int type)
 {
 	char c,sign,tmp[66];
-	const char *digits="0123456789abcdefghijklmnopqrstuvwxyz";
+	const char *digits = "0123456789abcdefghijklmnopqrstuvwxyz";
 	int i;
 
 	if (type & LARGE)
@@ -140,9 +108,9 @@ static char * number(char * str, long num, int base, int size, int precision
 	if (sign)
 		*str++ = sign;
 	if (type & SPECIAL) {
-		if (base==8)
+		if (base == 8)
 			*str++ = '0';
-		else if (base==16) {
+		else if (base == 16) {
 			*str++ = '0';
 			*str++ = digits[33];
 		}
@@ -159,7 +127,6 @@ static char * number(char * str, long num, int base, int size, int precision
 	return str;
 }
 
-/* Forward decl. needed for IP address printing stuff... */
 int sprintf(char * buf, const char *fmt, ...);
 
 int vsprintf(char *buf, const char *fmt, va_list args)
@@ -177,7 +144,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 				   number of chars for from string */
 	int qualifier;		/* 'h', 'l', or 'L' for integer fields */
 
-	for (str=buf ; *fmt ; ++fmt) {
+	for (str = buf ; *fmt ; ++fmt) {
 		if (*fmt != '%') {
 			*str++ = *fmt;
 			continue;
@@ -332,7 +299,7 @@ int sprintf(char * buf, const char *fmt, ...)
 	int i;
 
 	va_start(args, fmt);
-	i=vsprintf(buf,fmt,args);
+	i = vsprintf(buf,fmt,args);
 	va_end(args);
 	return i;
 }

@@ -38,6 +38,8 @@ struct buffer_handle {
   uint32_t reserved[1];
 };
 
+/* ATTENTION! ARCH-HIGLY_DEPENDENT !!!  - need to rewrite to be more portable */
+
 struct buffer_handle buffers_list[IMG_LAST_TAG+1] = {
   [IMG_LINUX] = {
     .dest = 0x90008000,

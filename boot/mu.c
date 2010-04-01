@@ -28,18 +28,27 @@
 
 #ifdef __PLAT_TI_OMAP3430__
 #include "plat/omap3430.h"
+
+#define MU_MTR_BASE_ADDR (MU_BASE_ADDR + 0x00)
+#define MU_MRR_BASE_ADDR (MU_BASE_ADDR + 0x10)
+#define MU_MSR_ADDR (MU_BASE_ADDR + 0x20)
+#define MU_MCR_ADDR (MU_BASE_ADDR + 0x24)
+
+#define DSP_RUN_TRIES 100
+
 #endif
 
 #ifdef __PLAT_FREESCALE_IMX31__
 #include "plat/mxc91231.h"
-#endif
 
-#define MU_MTR_BASE_ADDR (MU_BASE_ADDR+0x00)
-#define MU_MRR_BASE_ADDR (MU_BASE_ADDR+0x10)
-#define MU_MSR_ADDR (MU_BASE_ADDR+0x20)
-#define MU_MCR_ADDR (MU_BASE_ADDR+0x24)
+#define MU_MTR_BASE_ADDR (MU_BASE_ADDR + 0x00)
+#define MU_MRR_BASE_ADDR (MU_BASE_ADDR + 0x10)
+#define MU_MSR_ADDR (MU_BASE_ADDR + 0x20)
+#define MU_MCR_ADDR (MU_BASE_ADDR + 0x24)
 
 #define DSP_RUN_TRIES 100
+
+#endif
 
 static void mu_nmi(void) {
   modify_register32(MU_MCR_ADDR, 0, 1 << 3);

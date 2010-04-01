@@ -28,11 +28,6 @@
 
 #ifdef __PLAT_TI_OMAP3430__
 #include "plat/omap3430.h"
-#endif
-
-#ifdef __PLAT_FREESCALE_IMX31__
-#include "plat/mxc91231.h"
-#endif
 
 #define GPT1_GPTCR (GPT1_BASE_ADDR + 0x00)
 #define GPT1_GPTPR (GPT1_BASE_ADDR + 0x04)
@@ -44,6 +39,24 @@
 #define GPT1_GPTICR1 (GPT1_BASE_ADDR + 0x1c)
 #define GPT1_GPTICR2 (GPT1_BASE_ADDR + 0x20)
 #define GPT1_GPTCNT (GPT1_BASE_ADDR + 0x24)
+
+#endif
+
+#ifdef __PLAT_FREESCALE_IMX31__
+#include "plat/mxc91231.h"
+
+#define GPT1_GPTCR (GPT1_BASE_ADDR + 0x00)
+#define GPT1_GPTPR (GPT1_BASE_ADDR + 0x04)
+#define GPT1_GPTSR (GPT1_BASE_ADDR + 0x08)
+#define GPT1_GPTIR (GPT1_BASE_ADDR + 0x0c)
+#define GPT1_GPTOCR1 (GPT1_BASE_ADDR + 0x10)
+#define GPT1_GPTOCR2 (GPT1_BASE_ADDR + 0x14)
+#define GPT1_GPTOCR3 (GPT1_BASE_ADDR + 0x18)
+#define GPT1_GPTICR1 (GPT1_BASE_ADDR + 0x1c)
+#define GPT1_GPTICR2 (GPT1_BASE_ADDR + 0x20)
+#define GPT1_GPTCNT (GPT1_BASE_ADDR + 0x24)
+
+#endif
 
 static void gpt_disable() {
   modify_register32(GPT1_GPTCR, GPTCR_ENABLE, 0);

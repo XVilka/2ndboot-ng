@@ -6,6 +6,7 @@
 - Recalculate and rewrite some constants in headers in boot directory.
 - Cleanup asm code in boot/div.S
 - Rename all constants for UNIVERSAL_* and define them in file plat.h with #ifdefs ARCH
+- Move all arch constants and structures in plat header files
  
 2. Rewrite userspace tool and test it on stock boot.img
 

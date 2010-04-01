@@ -40,8 +40,8 @@ int spba_change_rights(unsigned int module, unsigned int rights) {
     return -1;
   }
   rights &= 0x7;
-  modify_register32(SPBA_CTRL_BASE_ADDR+module, 0x7, rights);
-  if ((read32(SPBA_CTRL_BASE_ADDR+module) & 0x7) != rights) {
+  modify_register32(SPBA_CTRL_BASE_ADDR + module, 0x7, rights);
+  if ((read32(SPBA_CTRL_BASE_ADDR + module) & 0x7) != rights) {
     return -1;
   }
   return 0;

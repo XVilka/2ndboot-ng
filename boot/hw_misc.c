@@ -33,6 +33,8 @@
 #include "plat/mxc91231.h"
 #endif
 
+/* Need for rewriting more portable */
+
 int hw_preboot() {
 /* Enable USBOTG clocks */
   modify_register32(CRM_AP_BASE_ADDR+0xc, 0, 1 << 12);
