@@ -7,7 +7,7 @@
 - Cleanup asm code in boot/div.S
 - Rename all constants for UNIVERSAL_* and define them in file plat.h with #ifdefs ARCH
 - Move all arch constants and structures in plat header files
-- Cleanup OMAP3430 header and rename constants to UNIVERSAL names
+- Cleanup OMAP3430 and USB header and rename constants to UNIVERSAL names
  
 2. Rewrite userspace tool and test it on stock boot.img
 
