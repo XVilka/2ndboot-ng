@@ -68,10 +68,7 @@ static void tlb_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects,
 	}
 }
 
-/* In this function we need to change all defined constants from mach/plat/mxc
- * to defines from mach/plat-omap/include/omap34xx.h
- * See http://docs.blackfin.uclinux.org/doku.php?id=linux-kernel:drivers:example_on-chip_sram
- */
+/* In this function we need to use device adresses to map them */
 void build_tlb_table(uint32_t *table) {
 	memset(table, 0, 4*4096);
 	tlb_map(table, PHYS_OFFSET, PHYS_OFFSET, 64, TTBL_NORMAL_MAPPING);

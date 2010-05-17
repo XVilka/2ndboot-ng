@@ -125,4 +125,35 @@ int buffer_append_userdata(const char __user *data, size_t size, loff_t *ppos)
 }
 
 
+int allocate_buffer(uint8_t tag, uint8_t type, uint8_t attrs, uint32_t bufsize, uint32_t rest) {
+struct generic_buffer *buf;
+void *data;
+int handle;
 
+switch (type) {
+case B_TYPE_PLAIN:
+data = allocate_plain_buffer(bufsize, rest);
+break;
+case B_TYPE_SCATTERED:
+data = allocate_scattered_buffer(bufsize, rest);
+break;
+case B_TYPE_NAND:
+data = allocate_nand_buffer(bufsize, rest);
+break;
+default:
+data = NULL;
+break;
+}
+if (data == NULL) {
+return INVALID_BUFFER_HANDLE;
+}
+handle = get_new_buffer(&buf);
+if (handle == INVALID_BUFFER_HANDLE) {
+free_typed_buffer(data, type);
+return INVALID_BUFFER_HANDLE;
+}
+init_abstract_buffer(ABSTRACT(data), tag, type, attrs, bufsize);
+buf->container.generic = data;
+put_buffer(buf);
+return handle;
+}
