@@ -22,13 +22,17 @@
  * 
 */
 
+#ifdef __KERNEL__
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
+#endif
+
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
+#include <linux/delay.h>
 
 #include "hboot.h"
 
@@ -36,14 +40,10 @@
 #include <mach/omap34xx.h>
 #endif
 
-#ifdef __PLAT_FREESCALE_IMX31__
-#include <mach/mx31.h>
-#endif
-
 #define CTRL_DEVNAME "hbootctrl"
 
-#define L1_NORMAL_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_WB)
-#define L1_DEVICE_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_UNCACHED)
+#define TTBL_NORMAL_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_WB)
+#define TTBL_DEVICE_MAPPING (PMD_TYPE_SECT | PMD_SECT_AP_WRITE | PMD_SECT_UNCACHED)
 
 struct cdev *hboot_cdev;
 dev_t hboot_dev;
@@ -60,7 +60,7 @@ int __attribute__((__naked__)) do_branch(void *bootlist, uint32_t bootsize, uint
 
 /* This function do remapping from virtual memory address to physical
  */
-static void l1_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, uint32_t flags) {
+static void tlb_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, uint32_t flags) {
 	uint32_t physbase, virtbase;
 
 	physbase = phys >> 20;
@@ -76,24 +76,16 @@ static void l1_map(uint32_t *table, uint32_t phys, uint32_t virt, size_t sects, 
  * for examples
  * Of course we can use only L2 cache mapping, but it can give unpredictable results!
  */
-void build_l1_table(uint32_t *table) {
+void build_tlb_table(uint32_t *table) {
 	memset(table, 0, 4*4096);
-	l1_map(table, PHYS_OFFSET, PHYS_OFFSET, 64, L1_NORMAL_MAPPING);
-	l1_map(table, PHYS_OFFSET, PAGE_OFFSET, 64, L1_NORMAL_MAPPING);
+	tlb_map(table, PHYS_OFFSET, PHYS_OFFSET, 64, TTBL_NORMAL_MAPPING);
+	tlb_map(table, PHYS_OFFSET, PAGE_OFFSET, 64, TTBL_NORMAL_MAPPING);
 
+/* Hardware specific mapping */
 #ifdef __PLAT_TI_OMAP3430__
-	l1_map(table, L2CC_BASE_ADDR, L2CC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
+	tlb_map(table, L2CC_BASE_ADDR, L2CC_BASE_ADDR, 1, TTBL_DEVICE_MAPPING);
 #endif
-
-#ifdef __PLAT_FREESCALE_IMX31__
-	l1_map(table, L2CC_BASE_ADDR, L2CC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
-	l1_map(table, AIPS1_BASE_ADDR, AIPS1_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-	l1_map(table, AIPS2_BASE_ADDR, AIPS2_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-	l1_map(table, SPBA0_BASE_ADDR, SPBA0_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-	l1_map(table, SPBA1_BASE_ADDR, SPBA1_BASE_ADDR, 16, L1_DEVICE_MAPPING);
-	l1_map(table, X_MEMC_BASE_ADDR, X_MEMC_BASE_ADDR, 1, L1_DEVICE_MAPPING);
-	l1_map(table, FB_RAM_BASE_ADDR, FB_RAM_BASE_ADDR, 4, L1_DEVICE_MAPPING);
-#endif
+/* End of hardware specific mapping */
 
 }
 
@@ -104,24 +96,24 @@ int hboot_boot(int handle) {
 	bootfunc_t boot_entry;
 	uint32_t bootsize, listsize;
 	void *bootlist;
-	uint32_t l1_mem, *l1_table;
+	uint32_t ttlb_mem, *tlb_table;
 
-	l1_mem = get_high_pages(2);
-	
-	if (l1_mem == 0) {
-		printk("Failed to allocate new l1 table\n");
+/* create aligned tlb_table */
+	ttlb_mem = get_high_pages(2);
+	if (ttlb_mem == 0) {
+		printk("Failed to allocate new TLB table\n");
 		return -ENOMEM;
 	}
-	if (l1_mem & 0x3fff) { 										/* Architecture specific code! Must be more portability. */
-//		l1_table = (uint32_t*)(((l1_mem >> 14) + 1) << 14); 	/* Unknown code - may be we can delete it? */
-		printk("unaligned l1 table\n");
-		free_high_pages((void*)l1_mem, 2);
+	if (ttlb_mem & 0x3fff) { 						/* Architecture specific code! Must be more portability. */
+		tlb_table = (uint32_t*)(((ttlb_mem >> 14) + 1) << 14); 	/* Unknown code - may be we can delete it? */
+		printk("unaligned TLB table\n");
+		free_high_pages((void*)ttlb_mem, 2);
 		return -EINVAL;
 	} else {
-		l1_table = (uint32_t*)l1_mem;
+		tlb_table = (uint32_t*)ttlb_mem;
 	}
-	
-	build_l1_table(l1_table);
+	build_tlb_table(tlb_table);
+/* end of creating tlb_table */
 
 	boot_entry = get_bootentry(&bootsize, handle);
 	if (boot_entry == NULL) {
@@ -131,20 +123,14 @@ int hboot_boot(int handle) {
 	if (bootlist == NULL) {
 		return -ENOMEM;
 	}
-	preempt_disable();
+        
+/* Boot block - disable everything and jump! */
+        preempt_disable();
 	local_irq_disable();
 	local_fiq_disable();
-	do_branch(bootlist, listsize, virt_to_phys(l1_table), boot_entry);
+	do_branch(bootlist, listsize, virt_to_phys(tlb_table), boot_entry);
+/* End of boot block */
 
-/*	This code will never run  */
-#if 0
-	set_ttbl_base(l1_old);
-	local_fiq_enable();
-	local_irq_enable();
-	preempt_enable();
-#else
-	while (1);
-#endif
 	return -EBUSY;
 }
 
@@ -216,26 +202,23 @@ static int hbootctrl_write(struct file *file, const char __user *buf, size_t cou
 	return buffer_append_userdata(buf, count, ppos);
 }
 
-/* Main module init function
- */
-static int __init hboot_init(void) {
+/* Main module init function */
+static int __init hboot_init(void)
+{
 	int ret;
-    printk(KERN_INFO CTRL_DEVNAME ": Initializing 2ndboot-ng module...\n");
-    ret = buffers_init();
-	if (ret < 0) {
-		printk(KERN_WARNING CTRL_DEVNAME ": Failed to initialize buffers table\n");
-		return ret;
-	}
+        
+        printk(KERN_INFO CTRL_DEVNAME ": Initializing 2ndboot-ng module...\n");
+        udelay(30000);
 	alloc_chrdev_region(&hboot_dev, 0, 1, CTRL_DEVNAME);
-    hboot_cdev = cdev_alloc( );
-    cdev_init(hboot_cdev, &hbootctrl_ops);
+        hboot_cdev = cdev_alloc();
+        cdev_init(hboot_cdev, &hbootctrl_ops);
 	ret = cdev_add(hboot_cdev, hboot_dev, 1);
 	printk(KERN_INFO CTRL_DEVNAME ":  Successfully registered dev\n");
 	return 0;
 }
 
+/* Main module exit function */
 static void __exit hboot_exit(void) {
-	buffers_destroy();
 	cdev_del(hboot_cdev);
 	unregister_chrdev_region(hboot_dev, 1);
 	return;

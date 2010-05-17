@@ -8,7 +8,7 @@
 EXTRA_CFLAGS += -D__PLAT_TI_OMAP3430__ -Wall -march=armv7-a -mtune=cortex-a8 -mfpu=neon
 
 obj-m += 2ndboot.o
-2ndboot-objs := hboot.o buffers.o crc32.o
+2ndboot-objs := hboot.o memory.o crc32.o
 
 all:
 	make -C $(HOME)/Documents/android/hack/kernel-mi M=$(PWD) modules
