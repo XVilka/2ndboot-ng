@@ -2,15 +2,15 @@
 
 # Building system for 2ndboot-ng
 
-BOOT_MODULE="hbootmod/2ndboot.ko"
-BOOT_USER="hbootuser/2ndboot"
+BOOT_MODULE="xbootmod/2ndboot.ko"
+BOOT_USER="xbootuser/2ndboot"
 BOOT_IMAGE="boot/boot.elf"
 
 echo "Building kernel module"
-cd hbootmod
+cd xbootmod
 make
 echo "Building user tool"
-cd ../hbootuser
+cd ../xbootuser
 make
 echo "Building bootloader"
 cd ../boot
@@ -43,9 +43,9 @@ fi
 
 # Cleaning tree after building
 
-cd hbootmod
+cd xbootmod
 make clean
-cd ../hbootuser
+cd ../xbootuser
 make clean
 cd ../boot
 make clean
